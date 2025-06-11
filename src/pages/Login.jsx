@@ -18,7 +18,7 @@ const Login = () => {
             className="w-full p-2 mb-4 border border-gray-300 rounded"
           />
           <button className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-            Sign In
+           Login
           </button>
         </form>
         <p className="mt-4 text-center text-sm">

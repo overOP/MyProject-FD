@@ -1,5 +1,6 @@
 // src/data/Data.js
 import { FaHome, FaUser, FaCog, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
+import { MdShoppingCartCheckout } from "react-icons/md";
 
 export const navData = [
   {
@@ -32,4 +33,9 @@ export const navData = [
     path: '/signup',
     icon: FaSignOutAlt,
   },
+  {
+    name: 'Cart',
+    path: '/cart',
+    icon: MdShoppingCartCheckout,
+  }
 ];

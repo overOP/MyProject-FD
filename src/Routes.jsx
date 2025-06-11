@@ -6,6 +6,8 @@ import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Cart from "./pages/Cart";
+import ProductDetail from "./pages/ProductDetail";
 
 export const routes = createBrowserRouter([
     {
@@ -35,6 +37,13 @@ export const routes = createBrowserRouter([
             {
                 path: '/signup',
                 element: <Signup/>
+            },
+            {
+                path: '/cart',
+                element: <Cart/>
+            },
+            {   path: '/product/:id',
+                element: <ProductDetail />
             }
         ]
     }
