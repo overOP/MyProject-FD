@@ -14,7 +14,7 @@ const ProductDetail = () => {
   // Use the same API you use in Home
   const apiToUse = "dummyjson"; 
 
-  const fetchProductDetail = () => {
+  const fetchProductDetail = async () => {
     let apiUrl = "";
     if (apiToUse === "fakestore") {
       apiUrl = `https://fakestoreapi.com/products/${id}`;
@@ -24,16 +24,15 @@ const ProductDetail = () => {
       apiUrl = `https://api.escuelajs.co/api/v1/products/${id}`;
     }
 
-    axios
-      .get(apiUrl)
-      .then((response) => {
-        setProduct(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError("Failed to fetch product detail.");
-        setLoading(false);
-      });
+    try {
+      const response = await axios.get(apiUrl);
+      setProduct(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to fetch product detail.");
+      setLoading(false);
+      console.log(err)
+    }
   };
 
   useEffect(() => {
@@ -74,3 +73,4 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
+
