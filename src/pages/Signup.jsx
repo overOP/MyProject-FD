@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router';
 import { ToastContainer, toast } from "react-toastify";
 import { useForm } from 'react-hook-form';
+import Input from '../components/Input';
 import { http } from '../config/Axios';
 
 const Signup = () => {
@@ -39,7 +40,7 @@ const Signup = () => {
 
         <form onSubmit={handleSubmit(signup)}>
           <div>
-            <input
+            <Input
               type="text"
               placeholder="Name"
               className="w-full p-2 mb-2 border border-gray-300 rounded"
@@ -49,7 +50,7 @@ const Signup = () => {
           </div>
 
           <div>
-            <input
+            <Input
               type="email"
               placeholder="Email"
               className="w-full p-2 mb-2 border border-gray-300 rounded"
@@ -59,7 +60,7 @@ const Signup = () => {
           </div>
 
           <div>
-            <input
+            <Input
               type="password"
               placeholder="Password"
               className="w-full p-2 mb-4 border border-gray-300 rounded"
