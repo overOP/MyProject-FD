@@ -1,29 +1,42 @@
+// src/hooks/useFetch.js
 import { useState, useEffect } from "react";
-import axios from "axios";
+import http from "@/api/http"; // use your axios instance with interceptors
+import axios from "axios"; // still needed for CancelToken
 
 const useFetch = (url) => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);     // generalized from "users"
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const source = axios.CancelToken.source();
+
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        setLoading(true);
-        const response = await axios.get(url);
-        const alldata = response.data.data;
-        setUsers(alldata);
-      } catch (error) {
-        setError(error);
-        console.log("Error fetching data:", error);
+        const response = await http.get(url, {
+          cancelToken: source.token,
+        });
+        setData(response.data?.data ?? response.data); // flexible for API structure
+      } catch (err) {
+        if (!axios.isCancel(err)) {
+          setError(err?.response?.data?.message || err.message || "Error fetching data");
+          console.error("Fetch error:", err);
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchUsers();
+
+    fetchData();
+
+    return () => {
+      source.cancel("Request canceled");
+    };
   }, [url]);
 
-  return [users, loading, error];
+  return { data, loading, error };
 };
 
 export default useFetch;

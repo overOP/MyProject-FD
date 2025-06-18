@@ -1,28 +1,104 @@
-import React from 'react';
-import { Link } from 'react-router';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
+import { ToastContainer, toast } from "react-toastify";
+import Input from "../components/Input";
+import { http } from "../config/Axios";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const login = async (data) => {
+    setIsSubmitting(true);
+    try {
+      const response = await http.post("/users/login", data);
+      const { accessToken, user, message } = response.data;
+
+      toast.success(message || "Login successful!");
+
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("userData", JSON.stringify(user));
+
+      setTimeout(() => navigate("/"), 1500);
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Login failed. Please try again.";
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="h-full w-full flex items-center justify-center bg-gray-100">
+    <div className="h-screen w-full flex items-center justify-center bg-gray-100">
+      <ToastContainer />
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
-        <form>
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full p-2 mb-4 border border-gray-300 rounded"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full p-2 mb-4 border border-gray-300 rounded"
-          />
-          <button className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-           Login
+        <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
+          Login
+        </h2>
+
+        <form onSubmit={handleSubmit(login)} noValidate>
+          {/* Email */}
+          <div className="mb-4">
+            <Input
+              type="email"
+              placeholder="Email"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: "Invalid email address",
+                },
+              })}
+            />
+            {errors.email && (
+              <span className="text-red-500 text-sm">{errors.email.message}</span>
+            )}
+          </div>
+
+          {/* Password */}
+          <div className="mb-4">
+            <Input
+              type="password"
+              placeholder="Password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+              })}
+            />
+            {errors.password && (
+              <span className="text-red-500 text-sm">
+                {errors.password.message}
+              </span>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`w-full p-2 text-white rounded transition ${
+              isSubmitting
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
+          >
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </form>
-        <p className="mt-4 text-center text-sm">
-          Don't have an account?{' '}
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don't have an account?{" "}
           <Link to="/signup" className="text-blue-600 hover:underline">
             Sign Up
           </Link>

@@ -1,9 +1,19 @@
+// src/config/axios.js
 import axios from "axios";
 
-const token = localStorage.getItem("accessToken")
-export const http = axios.create({
-    baseURL:import.meta.env.VITE_BACKEND_API,
-    headers: {
-        Authorization:token
+const baseURL = import.meta.env.VITE_BACKEND_API;
+
+const http = axios.create({ baseURL });
+
+http.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
-})
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+export { http };
